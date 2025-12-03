@@ -1,0 +1,8 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors: "Annet Doomen, Richard A. W. Felius"
+title: "An open-source deep learning model to classify real-world activity intensities in persons with chronic pain using a wrist-worn accelerometer. "
+version: 1.0.0
+doi: To be determined
+date-released: To be determined
+url: "https://github.com/RichardFel/Paincare"
