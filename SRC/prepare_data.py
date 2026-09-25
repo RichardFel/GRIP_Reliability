@@ -83,7 +83,7 @@ def clean_data(data_df, settings, all=False):
 def prepare_data(file, group, settings):
     # Load raw sensor data from file
     data_df = pd.read_csv(
-        f"{settings['DATA_DIR']}/raw_data/{group}/{file}", header=None, skiprows=10,on_bad_lines = 'skip' )
+        f"{settings['DATA_DIR']}/{group}/{file}", header=None, skiprows=10,on_bad_lines = 'skip' )
     data_df = data_df.drop(data_df.iloc[:, 4:8], axis=1)
     data_df = data_df.iloc[:, 1:]
     data_df.columns = ['acc_x', 'acc_y', 'acc_z']
@@ -91,7 +91,7 @@ def prepare_data(file, group, settings):
 
     # Load timestamps to calculate sampling frequency
     timestamps = pd.read_csv(
-        f"{settings['DATA_DIR']}/raw_data/{group}/{file}", skiprows=8, on_bad_lines='skip')
+        f"{settings['DATA_DIR']}/{group}/{file}", skiprows=8, on_bad_lines='skip')
     timestamps = timestamps.dropna(subset='Unnamed: 7')
     start_time = timestamps.iloc[0, -1]
     end_time = timestamps.iloc[-1, -1]

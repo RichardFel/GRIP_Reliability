@@ -2,3 +2,15 @@
 /Figures
 /Logging
 /venv
+*.xlsx
+*.csv
+*.pdf
+*.DS_Store
+*.jpg
+.vscode/settings.json
+SRC/__pycache__/characteristics.cpython-312.pyc
+SRC/__pycache__/prepare_data.cpython-312.pyc
+SRC/__pycache__/process_data.cpython-312.pyc
+SRC/__pycache__/reliability.cpython-312.pyc
+SRC/Logging/warnings_2026-05-06.log
+*.pyc

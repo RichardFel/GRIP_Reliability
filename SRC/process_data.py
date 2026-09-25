@@ -11,10 +11,10 @@ from SRC.barcode_plot import barcodeplot
 
 def process_data(settings):
     # Load config file and settings
-    groups = ['CP', 'HP'] # groups to analyse
+    groups = ['Reliability_CP', 'Reliability_HP'] # groups to analyse
     final_results = pd.DataFrame()
     for group in groups:
-        subjects = os.listdir(f"{settings['DATA_DIR']}/raw_data/{group}")
+        subjects = os.listdir(f"{settings['DATA_DIR']}/{group}")
 
 
         # Loop over subjecs
@@ -24,7 +24,7 @@ def process_data(settings):
             try:
                 if subject.endswith('.DS_Store'):
                     continue
-                days = os.listdir(f"{settings['DATA_DIR']}/raw_data/{group}/{subject}")
+                days = os.listdir(f"{settings['DATA_DIR']}/{group}/{subject}")
                 for file in ['pain_score', '.DS_Store', 'painscore']:
                     if file in days:
                         days.remove(file)
@@ -40,7 +40,7 @@ def process_data(settings):
                             print(f'Analysing day {day}')
                         results = {}
                         file_path = os.listdir(
-                            f"{settings['DATA_DIR']}/raw_data/{group}/{subject}/{day}")[0]
+                            f"{settings['DATA_DIR']}/{group}/{subject}/{day}")[0]
                         file = f"{subject}/{day}/{file_path}"
                         file_name = f"{subject}_{day}"
 
@@ -90,5 +90,6 @@ def process_data(settings):
     # Replace empty values with 0
     final_results = final_results.fillna(0)
     final_results.to_excel(f'Results/results_per_day.xlsx', index=False)
-    final_results.loc[:, 'average_activity_level':].corr().to_excel(
+    final_results.loc[:, 'per_changeper_change':].corr().to_excel(
         'Results/correlations_per_day.xlsx')
+

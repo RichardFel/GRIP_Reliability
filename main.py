@@ -11,11 +11,11 @@ Main script for the GRIP HAP project.
 
 '''
 
-import logging
+# import logging
 from SRC.process_data import process_data
 from SRC.reliability import reliability
-import os
-from datetime import date
+# import os
+# from datetime import date
 
 # General project settings.
 # More specific settings can be found in the config_file.
@@ -35,9 +35,9 @@ settings = {
     'MAX_Duration': 1200, # Maximum duration of wear time in minutes
     'number_of_days': 6 # Number of days to include in reliability analysis
 }
-for folder in ["Logging", "Figures", "Results"]:
-    os.makedirs(folder, exist_ok=True)
-logging.basicConfig(filename=f'logging/warnings_{date.today()}.log', level=logging.WARN)
+# for folder in ["Logging", "Figures", "Results"]:
+#     os.makedirs(folder, exist_ok=True)
+# logging.basicConfig(filename=f'logging/warnings_{date.today()}.log', level=logging.WARN)
 
 # %%
 
@@ -47,7 +47,7 @@ def main():
     # based on a previously trained ML algorithm.
     # Next, it calculates characteristics based on the predicted activities.
     # Finally, it saves the results in an excel file.
-    process_data(settings)
+    # process_data(settings)
     
     # Calculate reliability 
     reliability(settings)
