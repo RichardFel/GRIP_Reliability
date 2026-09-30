@@ -78,7 +78,7 @@ def ICC_analysis(tmp_data, group, week_type, number_of_days, settings):
 
         # Get the first 'i' rows for each subject
         subjects_data = subjects_data.set_index('subject')
-        subjects_data = subjects_data.loc[:, 'per_change':]
+        subjects_data = subjects_data.loc[:, 'Epochs_of_1minute':]
 
         # Get the first 'i' rows for each subject and calculate the mean
         first = subjects_data.groupby('subject').head(i)
@@ -127,7 +127,8 @@ def ICC_analysis(tmp_data, group, week_type, number_of_days, settings):
             final_df_excel = pd.concat((final_df_excel, results_df_excel), axis=1)
     final_df.to_excel(f"Results/ICC_{settings['MIN_Duration']}_{settings['MAX_Duration']}_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx")
     final_df_excel.to_excel(f'Results/ICC_{settings['MIN_Duration']}_{settings['MAX_Duration']}_formatted_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx')
-
+    subjects_data.corr(numeric_only=True, method='spearman').to_excel(f'Results/correlations_{settings['MIN_Duration']}_{settings['MAX_Duration']}_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx')
+    
 def weekday_weekend_ttest(tmp_data, group, settings):
     variables = tmp_data.loc[:, 'per_change':].select_dtypes(include=np.number).columns
     variables = [v for v in variables if v != 'weekend']
@@ -173,7 +174,7 @@ def reliability(settings):
     data =  pd.read_excel(f'{settings['RESULTS_DIR']}/results_per_day.xlsx')
 
     # Highly correlated variables to exclude from reliability analysis
-    correlations(data)
+    # correlations(data)
     data = clean(data, settings)
     
     # Weekend flag
