@@ -63,13 +63,21 @@ def add_weekend_flag(date):
     else:
         return 1
 
-def ICC_analysis(tmp_data, group, week_type, number_of_days, settings):
+def ICC_analysis(tmp_data, group, week_type, number_of_days, settings, subjects=None):
     subject_counts = tmp_data['subject'].value_counts()
 
 
     final_df = pd.DataFrame()
     final_df_excel = pd.DataFrame()
-    subjects = subject_counts.loc[subject_counts >= number_of_days * 2].index
+    eligible = subject_counts.loc[subject_counts >= number_of_days * 2].index
+    if subjects is None:
+        subjects = eligible
+    else:
+        # Restrict to a fixed set of subjects (e.g. the same participants as another analysis)
+        dropped = [s for s in subjects if s not in eligible]
+        if dropped:
+            print(f'Subjects dropped (fewer than {number_of_days * 2} days): {dropped}')
+        subjects = pd.Index([s for s in subjects if s in eligible])
     print(subjects)
     for i in range(1, number_of_days+1):
         results = {}
@@ -128,7 +136,8 @@ def ICC_analysis(tmp_data, group, week_type, number_of_days, settings):
     final_df.to_excel(f"Results/ICC_{settings['MIN_Duration']}_{settings['MAX_Duration']}_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx")
     final_df_excel.to_excel(f'Results/ICC_{settings['MIN_Duration']}_{settings['MAX_Duration']}_formatted_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx')
     subjects_data.corr(numeric_only=True, method='spearman').to_excel(f'Results/correlations_{settings['MIN_Duration']}_{settings['MAX_Duration']}_{group}_{week_type.lower()}_N{len(subjects)}_{number_of_days}days.xlsx')
-    
+    return subjects
+
 def weekday_weekend_ttest(tmp_data, group, settings):
     variables = tmp_data.loc[:, 'per_change':].select_dtypes(include=np.number).columns
     variables = [v for v in variables if v != 'weekend']
@@ -180,14 +189,23 @@ def reliability(settings):
     # Weekend flag
     data['weekend'] = data.apply(lambda row: add_weekend_flag(row['day']), axis=1)
 
+    selected_subjects = {}
     for week_type, value  in {'Weekday': [0, 5], 'Weekend': [1,2], 'All': [None, 6]}.items():
         for group in data['group'].unique():
             tmp_data = data.loc[data['group'] == group]
             if value[0] is not None:
                 tmp_data = tmp_data.loc[tmp_data['weekend'] == value[0]] # Only include specified weekend type for reliability analysis
             print(f'Group: {group}')
-            ICC_analysis(tmp_data, group, week_type, value[1], settings)
+            selected_subjects[(group, week_type)] = ICC_analysis(tmp_data, group, week_type, value[1], settings)
             # weekday_weekend_ttest(tmp_data, group, settings)
+
+    # CP, all days (weekday + weekend), restricted to the same participants as the
+    # CP weekday analysis and using the same number of days (5), for a direct comparison.
+    group = 'Reliability_CP'
+    tmp_data = data.loc[data['group'] == group]
+    print(f'Group: {group} (all days, weekday participants)')
+    ICC_analysis(tmp_data, group, 'All_weekday_subjects', 5, settings,
+                 subjects=selected_subjects[(group, 'Weekday')])
 
 
 #%%
