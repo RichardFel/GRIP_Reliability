@@ -1,6 +1,6 @@
 # GRIP_Human_Activity_Patterns
 Reliability of Activity Patterns measured with Accelerometers in Chronic Pain Patients
-
+test
 ---
 
 ## 📖 Overview
