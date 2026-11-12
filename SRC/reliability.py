@@ -44,6 +44,10 @@ def clean(data, settings):
 def correlations(data):
     data = data.loc[:, 'per_change':]
     correlations = data.corr(numeric_only=True, method='spearman')
+    
+    # Generate Heatmap here 
+    
+    
     correlations.dropna(how='all', inplace=True)
     correlations.dropna(axis = 1, how='all', inplace=True)
     correlations *= 100
@@ -66,7 +70,6 @@ def add_weekend_flag(date):
 def ICC_analysis(tmp_data, group, week_type, number_of_days, settings, subjects=None):
     subject_counts = tmp_data['subject'].value_counts()
 
-
     final_df = pd.DataFrame()
     final_df_excel = pd.DataFrame()
     eligible = subject_counts.loc[subject_counts >= number_of_days * 2].index
@@ -79,6 +82,10 @@ def ICC_analysis(tmp_data, group, week_type, number_of_days, settings, subjects=
             print(f'Subjects dropped (fewer than {number_of_days * 2} days): {dropped}')
         subjects = pd.Index([s for s in subjects if s in eligible])
     print(subjects)
+    
+    # Describe characteristics here
+    
+    
     for i in range(1, number_of_days+1):
         results = {}
         results_excel = {}
@@ -183,7 +190,7 @@ def reliability(settings):
     data =  pd.read_excel(f'{settings['RESULTS_DIR']}/results_per_day.xlsx')
 
     # Highly correlated variables to exclude from reliability analysis
-    # correlations(data)
+    correlations(data)
     data = clean(data, settings)
     
     # Weekend flag
